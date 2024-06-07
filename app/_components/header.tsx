@@ -2,6 +2,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
+import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,8 +34,13 @@ const Header = () => {
     <div className="flex z-50 px-10 py-4 bg-gray-700/20 shadow-sm backdrop-blur-sm items-center justify-between">
       <Link href="/">
         {/* <Image src="/logo.svg" width={40} height={40} alt="logo" /> */}
-        <h1 className={cn(GeistSans.variable, "font-sans text-2xl font-bold")}>
-          PRAXIS
+        <h1
+          className={cn(
+            GeistMono.variable,
+            "font-mono text-4xl font-bold pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#784fe0] to-[#000] bg-clip-text text-center  leading-none tracking-tighter text-transparent select-none"
+          )}
+        >
+          praxis
         </h1>
       </Link>
       <div>
