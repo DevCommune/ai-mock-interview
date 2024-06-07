@@ -5,6 +5,8 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
+import Header from "./_components/header";
+import { GradineBg } from "@/components/gradient-bg";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,7 +21,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={cn(GeistMono.variable, "font-mono")}>{children}</body>
+        <body className={cn(GeistMono.variable, "font-mono")}>
+          <GradineBg />
+
+          <Header />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
