@@ -7,10 +7,20 @@ import { Lightbulb, WebcamIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-const InterViewPage = ({ params }: { params: { interviewId: string } }) => {
+const InterViewStartPage = ({
+  params,
+}: {
+  params: { interviewId: string };
+}) => {
   const [interviewData, setInterviewData] = useState<any>(null);
   const [webcamEnabled, setWebcamEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
   useEffect(() => {
     GetInterviewDetails();
   }, []);
@@ -30,8 +40,17 @@ const InterViewPage = ({ params }: { params: { interviewId: string } }) => {
     setWebcamEnabled((prev) => !prev);
   };
 
+  const handleRedirectStasrtPage = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push(`/dashboard/interview/${params.interviewId}/start`);
+      toast("Interview Started 🔥");
+    }, 1400);
+  };
+
   return (
-    <div className="flex justify-center flex-col items-center">
+    <div className="flex justify-center flex-col items-center pt-5">
       <h2 className="font-bold text-4xl">Let's get started</h2>
       <div className="flex w-full items-center justify-between px-10 mt-6">
         <div className="bg-gray-500/20 min-h-[60vh] h-full w-[45vw] rounded-lg pt-10 pb-5 flex flex-col gap-4">
@@ -65,7 +84,16 @@ const InterViewPage = ({ params }: { params: { interviewId: string } }) => {
             </Alert>
           </div>
           <div className="flex items-center justify-end w-full px-5">
-            <Button variant="gooeyLeft">Start Interview</Button>
+            {/* <Link href={`/dashboard/interview/${params.interviewId}/start`}> */}
+            <Button
+              variant="shine"
+              onClick={() => handleRedirectStasrtPage()}
+              isLoading={loading}
+              loadingText="Starting Interview"
+            >
+              Start Interview
+            </Button>
+            {/* </Link> */}
           </div>
         </div>
         <div className="my-10 flex flex-col gap-6">
@@ -98,4 +126,4 @@ const InterViewPage = ({ params }: { params: { interviewId: string } }) => {
   );
 };
 
-export default InterViewPage;
+export default InterViewStartPage;
