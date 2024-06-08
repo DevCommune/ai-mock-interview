@@ -7,6 +7,8 @@ import useSpeechToText from "react-hook-speech-to-text";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { VoiceLoader } from "./voice-loader";
+import { VoiceLoaderForQuestion } from "./voice-loader-question";
 
 interface QuestionsSectionProps {
   mockInterviewQuestion: any;
@@ -18,6 +20,7 @@ export const QuestionsSection = ({
   activeQuestionIndex,
 }: QuestionsSectionProps) => {
   const [userAnswer, setUserAnswer] = useState();
+  const [speaking, setSpeaking] = useState(false);
 
   const {
     error,
@@ -40,9 +43,23 @@ export const QuestionsSection = ({
   const textToSpeach = (text: string) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);
+      speech.onstart = () => setSpeaking(true);
+      speech.onend = () => setSpeaking(false);
       window.speechSynthesis.speak(speech);
     } else {
       toast("Sorry your browser does not support text to speech");
+    }
+  };
+
+  const handleSpeachButton = (text: string) => {
+    textToSpeach(text);
+  };
+
+  const SaveUserAnswer = () => {
+    if (isRecording) {
+      stopSpeechToText();
+    } else {
+      startSpeechToText();
     }
   };
 
@@ -67,10 +84,16 @@ export const QuestionsSection = ({
           <div
             className="w-full flex justify-end pr-3"
             onClick={() =>
-              textToSpeach(mockInterviewQuestion[activeQuestionIndex]?.question)
+              handleSpeachButton(
+                mockInterviewQuestion[activeQuestionIndex]?.question
+              )
             }
           >
-            <AudioLines className="h-10 w-10 bg-gray-700/20 p-1 rounded-lg cursor-pointer" />
+            {speaking ? (
+              <VoiceLoader />
+            ) : (
+              <AudioLines className="size-9 rounded-lg cursor-pointer" />
+            )}
           </div>
         </div>
 
@@ -83,6 +106,9 @@ export const QuestionsSection = ({
                 ))}
                 {interimResult && <li>{interimResult}</li>}
               </ul>
+              {results.length < 0 || isRecording && (
+                <VoiceLoaderForQuestion className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20" />
+              )}
             </ScrollArea>
           ) : (
             <Alert className="bg-blue-300/70 border border-blue-500 min-h-[25vh] overflow-y-auto">
@@ -104,7 +130,7 @@ export const QuestionsSection = ({
           <Button
             isLoading={isRecording}
             loadingText="recording"
-            onClick={isRecording ? stopSpeechToText : startSpeechToText}
+            onClick={SaveUserAnswer}
           >
             {isRecording ? "Stop Recording" : "Record Answer"}
           </Button>
