@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AudioLines, Lightbulb, Sparkles } from "lucide-react";
+import { AudioLines, Sparkles } from "lucide-react";
 import useSpeechToText from "react-hook-speech-to-text";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,6 +15,7 @@ import { db } from "@/utils/db";
 import { UserAnswer } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment";
+import { RefreshButton } from "./refresh-answer-button";
 
 interface QuestionsSectionProps {
   mockInterviewQuestion: any;
@@ -51,7 +52,7 @@ export const QuestionsSection = ({
     );
   }, [results]);
 
-  const textToSpeach = (text: string) => {
+  const textToSpeech = (text: string) => {
     if ("speechSynthesis" in window) {
       const speech = new SpeechSynthesisUtterance(text);
       speech.onstart = () => setSpeaking(true);
@@ -62,8 +63,8 @@ export const QuestionsSection = ({
     }
   };
 
-  const handleSpeachButton = (text: string) => {
-    textToSpeach(text);
+  const handleSpeechButton = (text: string) => {
+    textToSpeech(text);
   };
 
   useEffect(() => {
@@ -78,26 +79,33 @@ export const QuestionsSection = ({
     }
   };
 
+  const clearUserData = () => {
+    setUserAnswer("");
+    setFinalAnswer("");
+    results.length = 0;
+  };
+
   const storeAnswerToDb = async () => {
     setLoading(true);
 
     if (finalanswer.length < 10) {
-      toast("Please provide a proper answer to submit.");
+      toast("Provide at least 10 characters to submit the answer");
       setLoading(false);
       return;
-    } else {
-      const feedbackPrompt = feedbackPromptFormat({
-        question: mockInterviewQuestion[activeQuestionIndex]?.question,
-        userAnswer: finalanswer,
-      });
+    }
 
+    const feedbackPrompt = feedbackPromptFormat({
+      question: mockInterviewQuestion[activeQuestionIndex]?.question,
+      userAnswer: finalanswer,
+    });
+
+    try {
       const result = await chatSession.sendMessage(feedbackPrompt);
       const mockJsonResponse = result.response
         .text()
         .replace("```json", "")
         .replace("```", "");
       const jsonFeedbackResponse = JSON.parse(mockJsonResponse);
-      console.log(jsonFeedbackResponse);
 
       if (interviewData?.mockId && user?.primaryEmailAddress?.emailAddress) {
         const resp = await db.insert(UserAnswer).values({
@@ -112,14 +120,18 @@ export const QuestionsSection = ({
         });
 
         if (resp) {
-          toast("Answer recorded successfully ");
+          toast("Answer recorded successfully");
+          clearUserData();
         } else {
           toast("Something went wrong while saving");
         }
-        setUserAnswer("");
-        setLoading(false);
+      } else {
+        toast("Error while fetching user data");
       }
+    } catch (error) {
+      toast("Something went wrong while saving");
     }
+    setLoading(false);
   };
 
   return (
@@ -129,6 +141,7 @@ export const QuestionsSection = ({
           {mockInterviewQuestion &&
             mockInterviewQuestion.map((question: string, index: number) => (
               <h2
+                key={index}
                 className={cn(
                   "p-2 bg-gray-600/15 rounded-full text-xs md:text-sm text-center cursor-pointer",
                   activeQuestionIndex === index && "bg-primary text-white"
@@ -138,12 +151,12 @@ export const QuestionsSection = ({
               </h2>
             ))}
         </div>
-        <div className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem] flex flex-col -gap-3">
+        <div className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem] flex flex-col gap-3">
           <h2>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
           <div
             className="w-full flex justify-end pr-3"
             onClick={() =>
-              handleSpeachButton(
+              handleSpeechButton(
                 mockInterviewQuestion[activeQuestionIndex]?.question
               )
             }
@@ -169,17 +182,23 @@ export const QuestionsSection = ({
                 (isRecording && (
                   <VoiceLoaderForQuestion className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20" />
                 ))}
+              <div
+                className="absolute top-3 right-5"
+                onClick={() => clearUserData()}
+              >
+                <RefreshButton />
+              </div>
             </ScrollArea>
           ) : (
             <Alert className="bg-blue-300/70 border border-blue-500 min-h-[25vh] overflow-y-auto">
               <AlertTitle className="text-black font-bold pb-2 flex items-center justify-start gap-2">
                 <Sparkles className="h-5 w-5 fill-black -mt-[2px]" />
-                NOTE !
+                NOTE!
               </AlertTitle>
               <AlertDescription className="text-sm">
                 Click on Record Answer when you want to answer the question. At
-                the end of interview we will give you the feedback along with
-                correct answer for each of question and your answer to comapre
+                the end of the interview, we will give you feedback along with
+                the correct answer for each question and your answer to compare
                 it.
               </AlertDescription>
             </Alert>
