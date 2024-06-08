@@ -21,12 +21,14 @@ interface QuestionsSectionProps {
   mockInterviewQuestion: any;
   activeQuestionIndex: number;
   interviewData: any;
+  setActiveQuestionIndex?: any;
 }
 
 export const QuestionsSection = ({
   mockInterviewQuestion,
   activeQuestionIndex,
   interviewData,
+  setActiveQuestionIndex,
 }: QuestionsSectionProps) => {
   const [userAnswer, setUserAnswer] = useState<string>("");
   const [speaking, setSpeaking] = useState(false);
@@ -137,7 +139,7 @@ export const QuestionsSection = ({
   return (
     mockInterviewQuestion && (
       <div className="p-5 border rounded-lg flex flex-col gap-5">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 relative">
           {mockInterviewQuestion &&
             mockInterviewQuestion.map((question: string, index: number) => (
               <h2
@@ -146,15 +148,13 @@ export const QuestionsSection = ({
                   "p-2 bg-gray-600/15 rounded-full text-xs md:text-sm text-center cursor-pointer",
                   activeQuestionIndex === index && "bg-primary text-white"
                 )}
+                onClick={() => setActiveQuestionIndex(index)}
               >
                 <span>Question </span>#{index + 1}
               </h2>
             ))}
-        </div>
-        <div className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem] flex flex-col gap-3">
-          <h2>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
           <div
-            className="w-full flex justify-end pr-3"
+            className="absolute top-12 right-5 w-full flex items-center justify-end"
             onClick={() =>
               handleSpeechButton(
                 mockInterviewQuestion[activeQuestionIndex]?.question
@@ -168,6 +168,9 @@ export const QuestionsSection = ({
             )}
           </div>
         </div>
+        <ScrollArea className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem] flex flex-col gap-3 h-[22vh] overflow-y-auto">
+          <h2>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
+        </ScrollArea>
 
         <div className="mt-7">
           {results.length > 0 || isRecording ? (

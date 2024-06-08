@@ -17,7 +17,7 @@ export const WebCam = ({ mockInterviewQuestion }: RecordAnsSectionProps) => {
 
   return (
     mockInterviewQuestion && (
-      <div className="flex flex-col justify-center items-center bg-gray-500/70 rounded-lg pt-2 px-5 gap-4 max-h-[70vh]">
+      <div className="flex flex-col justify-center items-center bg-gray-500/70 rounded-lg pt-2 px-5 gap-4 h-full">
         <div>
           {webcamEnabled ? (
             <div className="rounded-lg overflow-hidden">
