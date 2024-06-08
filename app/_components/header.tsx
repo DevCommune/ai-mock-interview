@@ -43,7 +43,7 @@ const Header = () => {
           praxis
         </h1>
       </Link>
-      <div>
+      <div className="hidden lg:block">
         <ul className="flex items-center justify-between gap-9 text-md text-gray-500 font-bold cursor-pointer">
           {routes.map((route, index) => {
             const active =

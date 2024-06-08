@@ -5,7 +5,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="max-h-screen">
       {/* <Astro className="left-10 top-14 pointer-events-none select-none z-20" /> */}
-      {children}
+      <div className="mx-5 md:mx-20 lg:mx-30 mt-5 md:mt-10 lg:mt-14">
+        {children}
+      </div>
     </div>
   );
 };
