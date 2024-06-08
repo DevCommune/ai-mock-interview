@@ -7,13 +7,24 @@ import { QuestionsSection } from "./_components/QuestionsSection";
 import { WebCam } from "./_components/WebCam";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import BreadcrumbItemWGLobal from "@/app/dashboard/_components/breadcrumb-global";
 
 const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
   const [interviewData, setInterviewData] = useState<any>(null);
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState<any>();
+  const [loading, setLoading] = useState(false);
 
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
-
+  const router = useRouter();
   useEffect(() => {
     GetInterviewDetails();
   }, []);
@@ -34,9 +45,39 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
     setInterviewData(result[0]);
   };
 
+  const handleRedirectStasrtPage = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.push(`/dashboard/interview/${interviewData?.mockId}/feedback`);
+      toast("Checkout Feedback 🥳");
+    }, 1700);
+  };
+
   return (
     mockInterviewQuestion && (
-      <div className="flex flex-col gap-3 justify-end w-full">
+      <div className="flex flex-col gap-3 justify-end w-full pt-4 pb-1">
+        <div className="">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItemWGLobal label="Dashboard" link="/dashboard" />
+              <BreadcrumbSeparator />
+              <BreadcrumbItemWGLobal
+                label="Information"
+                link={`/dashboard/interview/${interviewData?.mockId}`}
+              />
+              <BreadcrumbSeparator />
+
+              <BreadcrumbItemWGLobal
+                label="Interview"
+                link={`/dashboard/interview/${interviewData?.mockId}/start`}
+                active={true}
+              />
+              <BreadcrumbSeparator />
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+
         {/* Question */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <QuestionsSection
@@ -47,7 +88,7 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
           />
 
           {/* Video audio recording */}
-          <div className="flex flex-col gap-8 ">
+          <div className="flex flex-col gap-8">
             <div className="h-[70vh]">
               <WebCam mockInterviewQuestion={mockInterviewQuestion} />
             </div>
@@ -73,11 +114,13 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
                 </Button>
               )}
               {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
-                <Link
-                  href={`/dashboard/interview/${interviewData?.mockId}/feedback`}
+                <Button
+                  onClick={handleRedirectStasrtPage}
+                  isLoading={loading}
+                  loadingText="Redirecting"
                 >
-                  <Button>End Interview</Button>
-                </Link>
+                  End Interview
+                </Button>
               )}
             </div>
           </div>

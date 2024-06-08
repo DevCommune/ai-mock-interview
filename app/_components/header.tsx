@@ -31,7 +31,7 @@ const Header = () => {
   ];
 
   return (
-    <div className="flex z-50 px-10 py-4 bg-gray-700/20 shadow-sm backdrop-blur-sm items-center justify-between">
+    <div className="flex z-50 px-10 pt-2 pb-2.5 bg-gray-700/20 shadow-sm backdrop-blur-sm items-center justify-between">
       <Link href="/" className="flex items-center justify-center gap-1">
         {/* <Image src="/logo.png" width={40} height={40} alt="logo" className="mt-2" /> */}
         <h1

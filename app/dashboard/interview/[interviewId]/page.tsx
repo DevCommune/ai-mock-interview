@@ -10,6 +10,14 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import BreadcrumbItemWGLobal from "../../_components/breadcrumb-global";
 
 const InterViewStartPage = ({
   params,
@@ -50,8 +58,31 @@ const InterViewStartPage = ({
   };
 
   return (
-    <div className="flex justify-center flex-col items-center pt-5">
-      <h2 className="font-bold text-4xl">Let's get started</h2>
+    <div className="flex flex-col  pt-5">
+      <div className="pb-4 pt-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItemWGLobal label="Dashboard" link="/dashboard" />
+            <BreadcrumbSeparator />
+            <BreadcrumbItemWGLobal
+              label="Generate Question"
+              link={`/dashboard/interview/${params.interviewId}`}
+              active={true}
+            />
+            <BreadcrumbSeparator />
+
+            <BreadcrumbItemWGLobal
+              label="Interview"
+              link={`/dashboard/interview/${interviewData?.mockId}/start`}
+            />
+            <BreadcrumbSeparator />
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <h2 className="font-bold text-4xl flex w-full items-center justify-center">
+        Let's get started
+      </h2>
+
       <div className="flex w-full items-center justify-between px-10 mt-6">
         <div className="bg-gray-500/20 min-h-[60vh] h-full w-[45vw] rounded-lg pt-10 pb-5 flex flex-col gap-4">
           <div className="flex flex-col gap-3 px-10">

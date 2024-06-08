@@ -172,7 +172,7 @@ export const QuestionsSection = ({
           <h2>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
         </ScrollArea>
 
-        <div className="mt-7">
+        <div className="">
           {results.length > 0 || isRecording ? (
             <ScrollArea className="h-40 w-full rounded-md  bg-blue-300/70 border border-blue-500 px-5 py-5">
               <ul className="flex flex-col items-start text-left">
