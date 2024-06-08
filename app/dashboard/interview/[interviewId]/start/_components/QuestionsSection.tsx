@@ -154,7 +154,7 @@ export const QuestionsSection = ({
               </h2>
             ))}
           <div
-            className="absolute top-12 right-5 w-full flex items-center justify-end"
+            className="absolute top-12 right-5 flex justify-end !z-10"
             onClick={() =>
               handleSpeechButton(
                 mockInterviewQuestion[activeQuestionIndex]?.question
