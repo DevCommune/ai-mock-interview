@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   jobPosition: z.string().min(2, {
@@ -34,13 +35,20 @@ const formSchema = z.object({
   jobDescription: z.string().min(2, {
     message: "provide your job description",
   }),
-  jobExperience: z.string().min(2, {
-    message: "provide your job experience",
-  }),
+  jobExperience: z
+    .string()
+    .min(1, {
+      message: "provide your job experience",
+    })
+    .max(50, {
+      message: "provide your job experience less than 50 years",
+    }),
 });
 
 const AddNewInterview = () => {
   const [openDialog, setOpenDialog] = useState(false);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

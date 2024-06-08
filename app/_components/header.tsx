@@ -55,6 +55,7 @@ const Header = () => {
                   "transition-all hover:text-black duration-200",
                   active && "text-black"
                 )}
+                key={index}
               >
                 {route.label}
               </Link>
