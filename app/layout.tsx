@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Header from "./_components/header";
 import { GradineBg } from "@/components/gradient-bg";
 import Astro from "@/components/astro-illus";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "praxis",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <GradineBg />
           <Header />
           {children}
+          <Toaster/>
         </body>
       </html>
     </ClerkProvider>

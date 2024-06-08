@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,33 +20,43 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-
+import uuid from "uuid-random";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
+import { chatSession } from "@/utils/gemini-ai";
+import { InputPromptsFormat } from "@/utils/input-prompts-format";
+import { toast } from "sonner";
+import { db } from "@/utils/db";
+import { MockInterview } from "@/utils/schema";
+import moment from "moment";
+import { useUser } from "@clerk/nextjs";
 
 const formSchema = z.object({
-  jobPosition: z.string().min(2, {
-    message: "provide your job position/role",
+  jobPosition: z.string().min(1, {
+    message: "Provide your job position/role",
   }),
-  jobDescription: z.string().min(2, {
-    message: "provide your job description",
+  jobDescription: z.string().min(1, {
+    message: "Provide your job description",
   }),
   jobExperience: z
     .string()
     .min(1, {
-      message: "provide your job experience",
+      message: "Provide your job experience",
     })
     .max(50, {
-      message: "provide your job experience less than 50 years",
+      message: "Provide your job experience less than 50 years",
     }),
 });
 
 const AddNewInterview = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useUser();
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [jsonResponse, setJsonResponse] = useState([]);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,10 +68,58 @@ const AddNewInterview = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const InputPrompt = InputPromptsFormat(values);
+
+    try {
+      const result = await chatSession.sendMessage(InputPrompt);
+      const MockJsonResponse = result.response
+        .text()
+        .replace("```json", "")
+        .replace("```", "");
+
+      const parsedResponse = JSON.parse(MockJsonResponse);
+      setJsonResponse(parsedResponse);
+
+      if (MockJsonResponse) {
+        try {
+          const response = await db
+            .insert(MockInterview)
+            .values({
+              mockId: uuid(),
+              jsonMockResponse: MockJsonResponse,
+              jobPosition: values.jobPosition,
+              jobDescription: values.jobDescription,
+              jobExperience: values.jobExperience,
+              createdBy: user?.primaryEmailAddress?.emailAddress || "unknown",
+              createdAt: moment().format("DD-MM-YYYY"),
+            })
+            .returning({ mockId: MockInterview.mockId });
+
+          if (response) {
+            setOpenDialog(false);
+            router.push(`/dashboard/interview/${response[0]?.mockId}`);
+            toast("Interview created ✨");
+            setOpenDialog(false);
+          } else {
+            setOpenDialog(false);
+            toast("Failed to create Interview, try again");
+          }
+        } catch (dbError: any) {
+          console.error("Error while storing in the database", dbError);
+          toast("Failed to store in the database");
+        }
+      } else {
+        toast("Failed to generate from Json Data");
+      }
+
+      setLoading(false);
+    } catch (aiError: any) {
+      console.error("Error while generating from AI", aiError);
+      toast("Failed to generate from AI");
+      setLoading(false);
+    }
   }
 
   return (
@@ -77,7 +134,7 @@ const AddNewInterview = () => {
         </h2>
       </div>
 
-      <Dialog open={openDialog}>
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="font-bold text-xl">
@@ -86,8 +143,8 @@ const AddNewInterview = () => {
             <DialogDescription>
               <div>
                 <p className="text-slate-900">
-                  add details about your job position/role, job description and
-                  year of experience
+                  Add details about your job position/role, job description, and
+                  years of experience.
                 </p>
                 <div className="py-3">
                   <Form {...form}>
@@ -123,7 +180,7 @@ const AddNewInterview = () => {
                             </FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder="React, Angular, nodejs, mysql .."
+                                placeholder="React, Angular, Node.js, MySQL ..."
                                 className="resize-none"
                                 {...field}
                               />
@@ -138,10 +195,10 @@ const AddNewInterview = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-black">
-                              Year of experience
+                              Years of Experience
                             </FormLabel>
                             <FormControl>
-                              <Input placeholder="3" type="number" {...field} />
+                              <Input placeholder="5" type="number" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -155,7 +212,14 @@ const AddNewInterview = () => {
                         >
                           Cancel
                         </Button>
-                        <Button type="submit">Start interview</Button>
+                        <Button
+                          type="submit"
+                          isLoading={loading}
+                          disabled={loading}
+                          loadingText="Generating from AI"
+                        >
+                          Start Interview
+                        </Button>
                       </DialogFooter>
                     </form>
                   </Form>
