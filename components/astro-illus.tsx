@@ -5,7 +5,7 @@ import React from "react";
 const Astro = ({ className }: { className: string }) => {
   return (
     <div className={cn("absolute", className)}>
-      <Image src="/astro.svg" width={600} height={600} className="opacity-10" alt="astro" />
+      <Image src="/astro.svg" width={600} height={600} className="opacity-40" alt="astro" />
     </div>
   );
 };
