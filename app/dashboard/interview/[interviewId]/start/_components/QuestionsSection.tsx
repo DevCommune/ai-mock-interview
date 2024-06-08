@@ -1,10 +1,12 @@
+"use client";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb, Sparkles } from "lucide-react";
+import { AudioLines, Lightbulb, Sparkles } from "lucide-react";
 import useSpeechToText from "react-hook-speech-to-text";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 
 interface QuestionsSectionProps {
   mockInterviewQuestion: any;
@@ -15,6 +17,8 @@ export const QuestionsSection = ({
   mockInterviewQuestion,
   activeQuestionIndex,
 }: QuestionsSectionProps) => {
+  const [userAnswer, setUserAnswer] = useState();
+
   const {
     error,
     interimResult,
@@ -27,9 +31,24 @@ export const QuestionsSection = ({
     useLegacyResults: false,
   });
 
+  useEffect(() => {
+    results.map((result: any) =>
+      setUserAnswer((prevAns) => prevAns + result?.transcript)
+    );
+  }, [results]);
+
+  const textToSpeach = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const speech = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(speech);
+    } else {
+      toast("Sorry your browser does not support text to speech");
+    }
+  };
+
   return (
     mockInterviewQuestion && (
-      <div className="p-5 border rounded-lg flex flex-col gap-6">
+      <div className="p-5 border rounded-lg flex flex-col gap-5">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {mockInterviewQuestion &&
             mockInterviewQuestion.map((question: string, index: number) => (
@@ -43,12 +62,20 @@ export const QuestionsSection = ({
               </h2>
             ))}
         </div>
-        <div className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem]">
+        <div className="bg-gray-500/20 rounded-lg px-4 py-3 font-semibold text-sm md:text-[1rem] flex flex-col -gap-3">
           <h2>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
+          <div
+            className="w-full flex justify-end pr-3"
+            onClick={() =>
+              textToSpeach(mockInterviewQuestion[activeQuestionIndex]?.question)
+            }
+          >
+            <AudioLines className="h-10 w-10 bg-gray-700/20 p-1 rounded-lg cursor-pointer" />
+          </div>
         </div>
 
         <div className="mt-7">
-          {results.length > 0 ? (
+          {results.length > 0 || isRecording ? (
             <ScrollArea className="h-40 w-full rounded-md  bg-blue-300/70 border border-blue-500 px-5 py-5">
               <ul className="flex flex-col items-start text-left">
                 {results.map((result: any) => (
