@@ -32,12 +32,12 @@ const Header = () => {
 
   return (
     <div className="flex z-50 px-10 py-4 bg-gray-700/20 shadow-sm backdrop-blur-sm items-center justify-between">
-      <Link href="/">
-        {/* <Image src="/logo.svg" width={40} height={40} alt="logo" /> */}
+      <Link href="/" className="flex items-center justify-center gap-1">
+        {/* <Image src="/logo.png" width={40} height={40} alt="logo" className="mt-2" /> */}
         <h1
           className={cn(
             GeistMono.variable,
-            "font-mono text-4xl font-bold pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#784fe0] to-[#000] bg-clip-text text-center  leading-none tracking-tighter text-transparent select-none"
+            "font-mono text-5xl font-bold pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#784fe0] to-[#000] bg-clip-text text-center  leading-none tracking-tighter text-transparent select-none"
           )}
         >
           praxis

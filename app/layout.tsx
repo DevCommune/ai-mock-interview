@@ -11,9 +11,9 @@ import Astro from "@/components/astro-illus";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "praxis",
-  description: "SaaS Mock Interview taker web app",
-  icons: { icon: "/logo.svg" },
+  title: "Praxis",
+  description: "Experince the future of interviews with praxis",
+  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({

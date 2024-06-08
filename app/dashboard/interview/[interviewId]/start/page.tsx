@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { QuestionsSection } from "./_components/QuestionsSection";
 import { WebCam } from "./_components/WebCam";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
   const [interviewData, setInterviewData] = useState<any>(null);
@@ -52,11 +53,14 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
             </div>
             <div className="flex justify-end w-full items-center gap-5">
               {activeQuestionIndex > 0 && (
-                <Button variant="outline"
-                onClick={() =>
-                  setActiveQuestionIndex(activeQuestionIndex - 1)
-                }
-                >Previous Question</Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setActiveQuestionIndex(activeQuestionIndex - 1)
+                  }
+                >
+                  Previous Question
+                </Button>
               )}
 
               {activeQuestionIndex !== mockInterviewQuestion?.length - 1 && (
@@ -69,7 +73,11 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
                 </Button>
               )}
               {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
-                <Button className="">End Interview</Button>
+                <Link
+                  href={`/dashboard/interview/${interviewData?.mockId}/feedback`}
+                >
+                  <Button>End Interview</Button>
+                </Link>
               )}
             </div>
           </div>
