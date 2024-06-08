@@ -4,7 +4,7 @@ import { MockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import React, { useEffect, useState } from "react";
 import { QuestionsSection } from "./_components/QuestionsSection";
-import { RecordAnsSection } from "./_components/RecordAnsSection";
+import { WebCam } from "./_components/WebCam";
 
 const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
   const [interviewData, setInterviewData] = useState<any>(null);
@@ -33,17 +33,20 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-      {/* Question */}
-      <QuestionsSection mockInterviewQuestion={mockInterviewQuestion}
-      activeQuestionIndex={activeQuestionIndex}
-       />
+    mockInterviewQuestion && (
+      <div className="flex flex-col gap-3 justify-end w-full">
+        {/* Question */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <QuestionsSection
+            mockInterviewQuestion={mockInterviewQuestion}
+            activeQuestionIndex={activeQuestionIndex}
+          />
 
-      {/* Video audio recording */}
-      <RecordAnsSection 
-      mockInterviewQuestion={mockInterviewQuestion}
-        />
-    </div>
+          {/* Video audio recording */}
+          <WebCam mockInterviewQuestion={mockInterviewQuestion} />
+        </div>
+      </div>
+    )
   );
 };
 

@@ -8,10 +8,10 @@ interface RecordAnsSectionProps {
   mockInterviewQuestion: any;
 }
 
-export const RecordAnsSection = ({
+export const WebCam = ({
   mockInterviewQuestion,
 }: RecordAnsSectionProps) => {
-  const [webcamEnabled, setWebcamEnabled] = useState(true);
+  const [webcamEnabled, setWebcamEnabled] = useState(false);
 
   const handleWebCamAccess = () => {
     setWebcamEnabled((prev) => !prev);
@@ -19,7 +19,7 @@ export const RecordAnsSection = ({
 
   return (
     mockInterviewQuestion && (
-      <div className="flex flex-col justify-center items-center bg-gray-500/70 rounded-lg pt-2 px-5 gap-4">
+      <div className="flex flex-col justify-center items-center bg-gray-500/70 rounded-lg pt-2 px-5 gap-4 max-h-[70vh]">
         <div>
           {webcamEnabled ? (
             <div className="rounded-lg overflow-hidden">
@@ -36,7 +36,7 @@ export const RecordAnsSection = ({
             </div>
           ) : (
             <div className="flex flex-col gap-6 items-center justify-center">
-              <Image src="/webcam.png" alt="webcam" width={200} height={200} />
+              <Image src="/webcam.png" alt="webcam" className="select-nonbe pointer-events-none" width={200} height={200} />
               <Button onClick={() => handleWebCamAccess()}>
                 {webcamEnabled ? "Stop Web Camera" : "Enable Web Camera"}
               </Button>
