@@ -40,6 +40,7 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
           <QuestionsSection
             mockInterviewQuestion={mockInterviewQuestion}
             activeQuestionIndex={activeQuestionIndex}
+            interviewData={interviewData}
           />
 
           {/* Video audio recording */}

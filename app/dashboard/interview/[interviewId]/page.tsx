@@ -84,7 +84,6 @@ const InterViewStartPage = ({
             </Alert>
           </div>
           <div className="flex items-center justify-end w-full px-5">
-            {/* <Link href={`/dashboard/interview/${params.interviewId}/start`}> */}
             <Button
               variant="shine"
               onClick={() => handleRedirectStasrtPage()}
@@ -93,7 +92,6 @@ const InterViewStartPage = ({
             >
               Start Interview
             </Button>
-            {/* </Link> */}
           </div>
         </div>
         <div className="my-10 flex flex-col gap-6">

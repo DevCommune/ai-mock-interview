@@ -11,18 +11,27 @@ import { VoiceLoader } from "./voice-loader";
 import { VoiceLoaderForQuestion } from "./voice-loader-question";
 import { feedbackPromptFormat } from "@/utils/feedback-prompt";
 import { chatSession } from "@/utils/gemini-ai";
+import { db } from "@/utils/db";
+import { UserAnswer } from "@/utils/schema";
+import { useUser } from "@clerk/nextjs";
+import moment from "moment";
 
 interface QuestionsSectionProps {
   mockInterviewQuestion: any;
   activeQuestionIndex: number;
+  interviewData: any;
 }
 
 export const QuestionsSection = ({
   mockInterviewQuestion,
   activeQuestionIndex,
+  interviewData,
 }: QuestionsSectionProps) => {
   const [userAnswer, setUserAnswer] = useState<string>("");
   const [speaking, setSpeaking] = useState(false);
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [finalanswer, setFinalAnswer] = useState<string>("");
 
   const {
     error,
@@ -57,29 +66,59 @@ export const QuestionsSection = ({
     textToSpeach(text);
   };
 
-  const SaveUserAnswer = async () => {
+  useEffect(() => {
+    setFinalAnswer(userAnswer);
+  }, [isRecording, userAnswer]);
+
+  const RecordAnswer = () => {
     if (isRecording) {
       stopSpeechToText();
-      if (userAnswer?.length < 10) {
-        toast("Please say something to record your answer.");
-        return;
-      }
+    } else {
+      startSpeechToText();
+    }
+  };
+
+  const storeAnswerToDb = async () => {
+    setLoading(true);
+
+    if (finalanswer.length < 10) {
+      toast("Please provide a proper answer to submit.");
+      setLoading(false);
+      return;
+    } else {
       const feedbackPrompt = feedbackPromptFormat({
         question: mockInterviewQuestion[activeQuestionIndex]?.question,
-        userAnswer: userAnswer,
+        userAnswer: finalanswer,
       });
 
       const result = await chatSession.sendMessage(feedbackPrompt);
-
       const mockJsonResponse = result.response
         .text()
         .replace("```json", "")
         .replace("```", "");
-      const JsonFeedBackResponse = JSON.parse(mockJsonResponse);
+      const jsonFeedbackResponse = JSON.parse(mockJsonResponse);
+      console.log(jsonFeedbackResponse);
 
-      
-    } else {
-      startSpeechToText();
+      if (interviewData?.mockId && user?.primaryEmailAddress?.emailAddress) {
+        const resp = await db.insert(UserAnswer).values({
+          mockIdref: interviewData.mockId,
+          question: mockInterviewQuestion[activeQuestionIndex]?.question,
+          correctAnswer: mockInterviewQuestion[activeQuestionIndex]?.answer,
+          userAnswer: userAnswer,
+          feedback: jsonFeedbackResponse?.feedback,
+          rating: jsonFeedbackResponse?.rating,
+          userEmail: user.primaryEmailAddress.emailAddress,
+          createdAt: moment().format("YYYY-MM-DD"),
+        });
+
+        if (resp) {
+          toast("Answer recorded successfully ");
+        } else {
+          toast("Something went wrong while saving");
+        }
+        setUserAnswer("");
+        setLoading(false);
+      }
     }
   };
 
@@ -147,13 +186,26 @@ export const QuestionsSection = ({
           )}
         </div>
 
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center gap-4 pr-2">
           <Button
             isLoading={isRecording}
             loadingText="recording"
-            onClick={SaveUserAnswer}
+            onClick={() => {
+              RecordAnswer();
+            }}
+            disabled={loading}
           >
             {isRecording ? "Stop Recording" : "Record Answer"}
+          </Button>
+          <Button
+            isLoading={loading}
+            loadingText="submitting"
+            onClick={() => {
+              storeAnswerToDb();
+            }}
+            disabled={loading}
+          >
+            Submit Answer
           </Button>
         </div>
       </div>

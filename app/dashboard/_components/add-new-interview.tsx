@@ -204,7 +204,7 @@ const AddNewInterview = () => {
                           </FormItem>
                         )}
                       />
-                      <DialogFooter className="flex gap-2 items-center justify-end">
+                      <DialogFooter className="flex gap-2 items-center justify-end  pt-6">
                         <Button
                           variant="outline"
                           onClick={() => setOpenDialog(false)}
@@ -218,7 +218,7 @@ const AddNewInterview = () => {
                           disabled={loading}
                           loadingText="Generating from AI"
                         >
-                          Start Interview
+                          Generate Question
                         </Button>
                       </DialogFooter>
                     </form>
