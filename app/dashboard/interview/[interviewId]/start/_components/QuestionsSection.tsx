@@ -9,6 +9,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { VoiceLoader } from "./voice-loader";
 import { VoiceLoaderForQuestion } from "./voice-loader-question";
+import { feedbackPromptFormat } from "@/utils/feedback-prompt";
+import { chatSession } from "@/utils/gemini-ai";
 
 interface QuestionsSectionProps {
   mockInterviewQuestion: any;
@@ -19,7 +21,7 @@ export const QuestionsSection = ({
   mockInterviewQuestion,
   activeQuestionIndex,
 }: QuestionsSectionProps) => {
-  const [userAnswer, setUserAnswer] = useState();
+  const [userAnswer, setUserAnswer] = useState<string>("");
   const [speaking, setSpeaking] = useState(false);
 
   const {
@@ -55,9 +57,27 @@ export const QuestionsSection = ({
     textToSpeach(text);
   };
 
-  const SaveUserAnswer = () => {
+  const SaveUserAnswer = async () => {
     if (isRecording) {
       stopSpeechToText();
+      if (userAnswer?.length < 10) {
+        toast("Please say something to record your answer.");
+        return;
+      }
+      const feedbackPrompt = feedbackPromptFormat({
+        question: mockInterviewQuestion[activeQuestionIndex]?.question,
+        userAnswer: userAnswer,
+      });
+
+      const result = await chatSession.sendMessage(feedbackPrompt);
+
+      const mockJsonResponse = result.response
+        .text()
+        .replace("```json", "")
+        .replace("```", "");
+      const JsonFeedBackResponse = JSON.parse(mockJsonResponse);
+
+      
     } else {
       startSpeechToText();
     }
@@ -106,9 +126,10 @@ export const QuestionsSection = ({
                 ))}
                 {interimResult && <li>{interimResult}</li>}
               </ul>
-              {results.length < 0 || isRecording && (
-                <VoiceLoaderForQuestion className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20" />
-              )}
+              {results.length < 0 ||
+                (isRecording && (
+                  <VoiceLoaderForQuestion className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20" />
+                ))}
             </ScrollArea>
           ) : (
             <Alert className="bg-blue-300/70 border border-blue-500 min-h-[25vh] overflow-y-auto">
