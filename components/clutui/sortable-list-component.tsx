@@ -20,31 +20,31 @@ const initialState = [
     description:
       "Choose your specific job role and description to generate tailored interview questions that closely mimic real-life scenarios.",
   },
-  {
-    text: "Enter year of experience",
-    checked: false,
-    id: 2,
-    description:
-      "Enter your years of experience to receive questions that match your professional level, ensuring the interview challenges are appropriate for your career stage. This personalized approach helps you demonstrate your expertise and readiness for the next step in your career.",
-  },
+//   {
+//     text: "Enter year of experience",
+//     checked: false,
+//     id: 2,
+//     description:
+//       "Enter your years of experience to receive questions that match your professional level, ensuring the interview challenges are appropriate for your career stage. This personalized approach helps you demonstrate your expertise and readiness for the next step in your career.",
+//   },
   {
     text: "Generate Question From AI",
     checked: false,
-    id: 3,
+    id: 2,
     description:
       "Leverage advanced AI to generate customized interview questions. Our intelligent system creates relevant and challenging questions tailored to your role, job description, and experience level, providing a comprehensive and realistic interview practice experience.",
   },
   {
     text: "Record Answer",
     checked: false,
-    id: 4,
+    id: 3,
     description:
       "Begin your mock interview and record your answers in real-time. This hands-on practice allows you to refine your responses, improve your delivery, and build confidence by simulating an authentic interview environment.",
   },
   {
     text: "Correct Answers and Feedback",
     checked: false,
-    id: 5,
+    id: 4,
     description:
       "Compare your responses with ideal answers and get detailed feedback. Our system highlights areas where you excel and provides constructive advice on how to improve, ensuring you are well-prepared for real interview scenarios.",
   },
