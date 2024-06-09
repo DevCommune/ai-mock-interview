@@ -59,7 +59,7 @@ const InterViewStartPage = ({
 
   return (
     <div className="flex flex-col  pt-5">
-      <div className="pb-4 pt-3">
+      {/* <div className="pb-4 pt-3">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItemWGLobal label="Dashboard" link="/dashboard" />
@@ -78,7 +78,7 @@ const InterViewStartPage = ({
             <BreadcrumbSeparator />
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </div> */}
       <h2 className="font-bold text-4xl flex w-full items-center justify-center">
         Let's get started
       </h2>

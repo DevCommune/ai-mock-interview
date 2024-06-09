@@ -33,7 +33,7 @@ const FeedBackPage = ({ params }: { params: { interviewId: string } }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="pt-5 pb-4">
+      {/* <div className="pt-5 pb-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItemWGLobal label="Dashboard" link="/dashboard" />
@@ -55,7 +55,7 @@ const FeedBackPage = ({ params }: { params: { interviewId: string } }) => {
             />
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </div> */}
     </div>
   );
 };

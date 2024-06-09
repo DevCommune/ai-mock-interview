@@ -57,7 +57,7 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
   return (
     mockInterviewQuestion && (
       <div className="flex flex-col gap-3 justify-end w-full pt-4 pb-1">
-        <div className="">
+        {/* <div className="">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItemWGLobal label="Dashboard" link="/dashboard" />
@@ -76,7 +76,7 @@ const InterviewQuestion = ({ params }: { params: { interviewId: string } }) => {
               <BreadcrumbSeparator />
             </BreadcrumbList>
           </Breadcrumb>
-        </div>
+        </div> */}
 
         {/* Question */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
