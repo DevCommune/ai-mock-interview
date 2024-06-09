@@ -9,7 +9,7 @@ interface RecordAnsSectionProps {
 }
 
 export const WebCam = ({ mockInterviewQuestion }: RecordAnsSectionProps) => {
-  const [webcamEnabled, setWebcamEnabled] = useState(false);
+  const [webcamEnabled, setWebcamEnabled] = useState(true);
 
   const handleWebCamAccess = () => {
     setWebcamEnabled((prev) => !prev);
