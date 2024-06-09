@@ -94,14 +94,19 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Button
-              onClick={handleRedirectSignin}
-              isLoading={signinRedirectDelay}
-              loadingText="Logging in"
-              size={"sm"}
-            >
-              Log In
-            </Button>
+            <ClerkLoading>
+              <Skeleton className="h-9 w-9 bg-gray-700/40 rounded-full" />
+            </ClerkLoading>
+            <ClerkLoaded>
+              <Button
+                onClick={handleRedirectSignin}
+                isLoading={signinRedirectDelay}
+                loadingText="Logging in"
+                size={"sm"}
+              >
+                Log In
+              </Button>
+            </ClerkLoaded>
           </>
         )}
       </div>
