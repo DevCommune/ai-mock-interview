@@ -1,16 +1,28 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, UserButton, useUser } from "@clerk/nextjs";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const Header = () => {
   const pathname = usePathname();
+  const { user } = useUser();
+  const [signinRedirectDelay, setSigninRedirectDelay] = useState(false);
+  const router = useRouter();
+
+  const handleRedirectSignin = () => {
+    setSigninRedirectDelay(true);
+    setTimeout(() => {
+      router.push(`/sign-in`);
+      setSigninRedirectDelay(false);
+    }, 1400);
+  };
 
   const routes = [
     {
@@ -64,19 +76,34 @@ const Header = () => {
         </ul>
       </div>
       <div className="flex items-center justify-center gap-6">
-        <ClerkLoading>
-          <Skeleton className="h-9 w-9 bg-gray-700/40 rounded-full" />
-        </ClerkLoading>
-        <ClerkLoaded>
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                avatarBox: "h-9 w-9",
-              },
-            }}
-          />
-        </ClerkLoaded>
+        {user ? (
+          <>
+            <ClerkLoading>
+              <Skeleton className="h-9 w-9 bg-gray-700/40 rounded-full" />
+            </ClerkLoading>
+            <ClerkLoaded>
+              <UserButton
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "h-9 w-9",
+                  },
+                }}
+              />
+            </ClerkLoaded>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={handleRedirectSignin}
+              isLoading={signinRedirectDelay}
+              loadingText="Logging in"
+              size={"sm"}
+            >
+              Log In
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
