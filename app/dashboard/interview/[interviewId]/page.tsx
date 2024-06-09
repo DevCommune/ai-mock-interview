@@ -27,6 +27,8 @@ const InterViewStartPage = ({
   const [interviewData, setInterviewData] = useState<any>(null);
   const [webcamEnabled, setWebcamEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingRedirectDashboard, setLoadingRedirectDashboard] =
+    useState(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -48,12 +50,19 @@ const InterViewStartPage = ({
     setWebcamEnabled((prev) => !prev);
   };
 
-  const handleRedirectStasrtPage = () => {
+  const handleRedirectStartPage = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       router.push(`/dashboard/interview/${params.interviewId}/start`);
       toast("Interview Started 🔥");
+    }, 1400);
+  };
+  const handleRedirectDashboard = () => {
+    setLoadingRedirectDashboard(true);
+    setTimeout(() => {
+      setLoadingRedirectDashboard(false);
+      router.push(`/dashboard`);
     }, 1400);
   };
 
@@ -114,10 +123,17 @@ const InterViewStartPage = ({
               </AlertDescription>
             </Alert>
           </div>
-          <div className="flex items-center justify-end w-full px-5">
+          <div className="flex items-center justify-end w-full px-5 gap-4">
+            <Button
+              onClick={() => handleRedirectDashboard()}
+              isLoading={loadingRedirectDashboard}
+              loadingText="Redirecting"
+            >
+              Back to dashboard
+            </Button>
             <Button
               variant="shine"
-              onClick={() => handleRedirectStasrtPage()}
+              onClick={() => handleRedirectStartPage()}
               isLoading={loading}
               loadingText="Starting Interview"
             >

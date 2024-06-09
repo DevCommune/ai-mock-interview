@@ -43,6 +43,7 @@ export const QuestionsSection = ({
     results,
     startSpeechToText,
     stopSpeechToText,
+    setResults,
   } = useSpeechToText({
     continuous: true,
     useLegacyResults: false,
@@ -123,6 +124,7 @@ export const QuestionsSection = ({
 
         if (resp) {
           toast("Answer recorded successfully");
+          setResults([]);
           clearUserData();
         } else {
           toast("Something went wrong while saving");
@@ -133,6 +135,7 @@ export const QuestionsSection = ({
     } catch (error) {
       toast("Something went wrong while saving");
     }
+    setResults([]);
     setLoading(false);
   };
 
