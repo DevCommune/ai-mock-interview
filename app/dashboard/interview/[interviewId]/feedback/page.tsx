@@ -43,25 +43,47 @@ const FeedBackPage = ({ params }: { params: { interviewId: string } }) => {
 
   return (
     <div className="flex flex-col p-4">
-      <div>
-        <h2 className="text-3xl text-emerald-700 font-bold">Congratulation</h2>
-        <p className="text-xl font-semibold">Here is your interview feedback</p>
-        <p
-          className={cn(
-            "text-primary text-lg my-1 flex items-center justify-start gap-1"
-          )}
-        >
-          <span>
-            <Sparkles className="size-5 fill-yellow-500 text-yellow-600" />
-          </span>
-          Your overall interview rating: <span>7/10</span>
-        </p>
+      {feedbackList?.length == 0 ? (
+        <div className="flex flex-col gap-3 w-full h-full items-center justify-center pt-20">
+          <h2 className="font-bold text-2xl text-gray-700">
+            No interview feedback Found
+          </h2>
+          <Button
+            onClick={handleRedirectDashboard}
+            isLoading={loading}
+            loadingText="Redirecting"
+            type="button"
+            variant="shine"
+          >
+            Back to home
+          </Button>
+        </div>
+      ) : (
+        <div>
+          <h2 className="text-3xl text-emerald-700 font-bold">
+            Congratulation
+          </h2>
+          <p className="text-xl font-semibold">
+            Here is your interview feedback
+          </p>
 
-        <p className="text-sm text-muted-foreground">
-          Find below interview question with correct answer, your answer and
-          feedback for improvement
-        </p>
-      </div>
+          <p
+            className={cn(
+              "text-primary text-lg my-1 flex items-center justify-start gap-1"
+            )}
+          >
+            <span>
+              <Sparkles className="size-5 fill-yellow-500 text-yellow-600" />
+            </span>
+            Your overall interview rating: <span>7/10</span>
+          </p>
+
+          <p className="text-sm text-muted-foreground">
+            Find below interview question with correct answer, your answer and
+            feedback for improvement
+          </p>
+        </div>
+      )}
       <ScrollArea className="mt-2 h-[58vh] w-full py-2 px-3">
         {feedbackList &&
           feedbackList.map((item: any, index: number) => {
@@ -114,17 +136,19 @@ const FeedBackPage = ({ params }: { params: { interviewId: string } }) => {
           })}
       </ScrollArea>
 
-      <div className="w-full flex justify-end mt-2">
-        <Button
-          onClick={handleRedirectDashboard}
-          isLoading={loading}
-          loadingText="Redirecting"
-          type="button"
-          variant="shine"
-        >
-          Back to home
-        </Button>
-      </div>
+      {feedbackList?.length > 0 && (
+        <div className="w-full flex justify-end mt-2">
+          <Button
+            onClick={handleRedirectDashboard}
+            isLoading={loading}
+            loadingText="Redirecting"
+            type="button"
+            variant="shine"
+          >
+            Back to home
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
