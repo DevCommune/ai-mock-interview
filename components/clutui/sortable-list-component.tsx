@@ -14,7 +14,7 @@ import SortableList, { Item, SortableListItem } from "./shortable-list";
 
 const initialState = [
   {
-    text: "Select Job Role/ Descriptiion",
+    text: "Select Job Role/ Description",
     checked: false,
     id: 1,
     description:
